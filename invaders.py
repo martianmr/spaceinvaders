@@ -89,7 +89,6 @@ def _make_square(ms, vol=0.5, freq=440.0):
     """A raw square wave"""
     n = int(SAMPLE_RATE * ms / 1000.0)
     buf = array.array("h")
-    # rng = random.Random()
     for i in range(n):
         t = i / SAMPLE_RATE
         val = 1.0 if math.sin(2 * math.pi * freq * t) >= 0 else -1.0
@@ -1695,9 +1694,9 @@ class Game:
         for i in range(10):
             colour = GREEN if self.high_score_table[i]["highlight"] else WHITE
             self._draw_text(str(self.high_score_table[i]["score"]), self.font_medium,
-                            colour, SCREEN_WIDTH // 2 - 24, SCREEN_HEIGHT // 2 - 120 + (i * 27), "right")
+                            colour, SCREEN_WIDTH // 2 - 24, SCREEN_HEIGHT // 2 - 126 + (i * 27), "right")
             self._draw_text(self.high_score_table[i]["name"], self.font_medium,
-                            colour, SCREEN_WIDTH // 2 + 12, SCREEN_HEIGHT // 2 - 120 + (i * 27), "left")
+                            colour, SCREEN_WIDTH // 2 + 12, SCREEN_HEIGHT // 2 - 126 + (i * 27), "left")
         self._draw_legend()
 
         # Animation of squid blowing up 'C'
