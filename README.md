@@ -24,6 +24,11 @@ python invaders.py
 <img src="./images/screenshot09.png" alt="Screenshot 9" width="400"/>
 <img src="./images/screenshot10.png" alt="Screenshot 10" width="400"/>
 
+## 👾 References
+
+https://www.computerarcheology.com/Arcade/SpaceInvaders/  
+https://spaceinvaders.fandom.com/wiki/Space_Invaders
+
 ## 👾 License
 
 spaceinvaders is is released under the [MIT license](https://opensource.org/license/mit).
