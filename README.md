@@ -3,7 +3,7 @@
   <h3>A faithful recreation of the 1978 Taito arcade classic</h3>
 </div>
 
-## Quickstart
+## 👾 Quickstart
 
 ```bash
 git clone https://github.com/martianmr/spaceinvaders
@@ -11,7 +11,7 @@ pip install pygame
 python invaders.py
 ```
 
-## Screenshots
+## 👾 Screenshots
 
 <img src="./images/screenshot01.png" alt="Screenshot 1" width="400"/>
 <img src="./images/screenshot02.png" alt="Screenshot 2" width="400"/>
@@ -24,6 +24,6 @@ python invaders.py
 <img src="./images/screenshot09.png" alt="Screenshot 9" width="400"/>
 <img src="./images/screenshot10.png" alt="Screenshot 10" width="400"/>
 
-## License
+## 👾 License
 
 spaceinvaders is is released under the [MIT license](https://opensource.org/license/mit).
