@@ -154,7 +154,6 @@ def init_audio():
     global _sound_ok
     sounds = {}
     try:
-        pygame.mixer.pre_init(SAMPLE_RATE, -16, 4, 512)
         pygame.mixer.init()
         _sound_ok = True
     except pygame.error:
@@ -1769,6 +1768,7 @@ class Game:
 
 
 def main():
+    pygame.mixer.pre_init(SAMPLE_RATE, -16, 1, 512)
     pygame.init()
     Game().run()
 
