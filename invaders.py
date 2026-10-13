@@ -86,7 +86,7 @@ SOUND_OK = False
 
 def _make_sound(vol, func, freq=None):
     """Synthesize Space Invaders sounds."""
-    sound =  pygame.mixer.Sound(func(freq) if freq is not None else func())
+    sound = pygame.mixer.Sound(func(freq) if freq is not None else func())
     sound.set_volume(vol)
     return sound
 
