@@ -22,14 +22,13 @@ The game faithfully reproduces the core mechanics of the original:
     heartbeat that accelerates as the invaders are destroyed.
 """
 
-import array
-import math
 import os
-import random
 import sys
 
 import pygame
 from enum import Enum
+
+import arcadesynth as synth
 
 # ---------------------------------------------------------------------------
 # Setup
@@ -82,92 +81,36 @@ BUNKER_Y = SCREEN_HEIGHT - 48 * SCALE
 # ---------------------------------------------------------------------------
 
 SAMPLE_RATE = 22050
-_sound_ok = False
+SOUND_OK = False
 
 
-def _make_square(ms, vol=0.5, freq=440.0):
-    """A raw square wave"""
-    n = int(SAMPLE_RATE * ms / 1000.0)
-    buf = array.array("h")
-    for i in range(n):
-        t = i / SAMPLE_RATE
-        val = 1.0 if math.sin(2 * math.pi * freq * t) >= 0 else -1.0
-        buf.append(int(val * vol * 32767))
-    return pygame.mixer.Sound(buffer=buf.tobytes())
-
-
-def _make_noise(ms, vol=0.5):
-    """White noise, used for explosions."""
-    n = int(SAMPLE_RATE * ms / 1000.0)
-    buf = array.array("h")
-    rng = random.Random()
-    for i in range(n):
-        if (i // 4) % 2 == 0:
-            buf.append(int(rng.uniform(-1.0, 1.0) * vol * 32767))
-        else:
-            buf.append(0)
-    return pygame.mixer.Sound(buffer=buf.tobytes())
-
-
-def _make_sweep(ms=120, vol=0.35):
-    """A quick descending square-wave sweep for the player's shot."""
-    n = int(SAMPLE_RATE * ms / 1000.0)
-    buf = array.array("h")
-    phase = 0.0
-    for i in range(n):
-        freq = 900.0 - (900.0 - 150.0) * (i / n)
-        phase += 2 * math.pi * freq / SAMPLE_RATE
-        val = 1.0 if math.sin(phase) >= 0 else -1.0
-        buf.append(int(val * vol * 32767))
-    return pygame.mixer.Sound(buffer=buf.tobytes())
-
-
-def _make_ufo(ms=600, vol=0.4):
-    """A warbling tone for the mystery UFO."""
-    n = int(SAMPLE_RATE * ms / 1000.0)
-    buf = array.array("h")
-    phase = 0.0
-    for i in range(n):
-        t = i / SAMPLE_RATE
-        freq = 400.0 + 120.0 * math.sin(2 * math.pi * 6.0 * t)
-        phase += 2 * math.pi * freq / SAMPLE_RATE
-        buf.append(int(math.sin(phase) * vol * 32767))
-    return pygame.mixer.Sound(buffer=buf.tobytes())
-
-
-def _make_wav(filename, vol=0.5):
-    """Load a WAV file and return a pygame.mixer.Sound object."""
-    if not os.path.exists(filename):
-        return None
-    sound = pygame.mixer.Sound(filename)
+def _make_sound(vol, func, freq=None):
+    """Synthesize Space Invaders sounds."""
+    sound =  pygame.mixer.Sound(func(freq) if freq is not None else func())
     sound.set_volume(vol)
     return sound
 
 
-def _make_sound(filename, vol, fallback_func, ms, freq=None):
-    """Load a WAV file if it exists, otherwise generate a sound."""
-    return _make_wav(filename, vol) if os.path.exists(filename) else fallback_func(ms, vol, freq) if freq is not None else fallback_func(ms, vol)
-
-
 def init_audio():
     """Initialise the mixer and build all game sounds."""
-    global _sound_ok
+    global SOUND_OK
     sounds = {}
     try:
         pygame.mixer.init()
-        _sound_ok = True
+        frequency, _, channels = pygame.mixer.get_init()
+        synth.init(frequency, channels)
+        SOUND_OK = True
     except pygame.error:
-        _sound_ok = False
+        SOUND_OK = False
         return sounds
 
-    sounds["bass"] = [_make_sound("sounds/march%d.wav" % i, 0.3, _make_square, 200, f)
-                      for f,i in ((13.75, 1), (12.975, 2), (12.25, 3), (11.55, 4))] # four-note bass heartbeat.
-    sounds["shoot"] = _make_sound("sounds/playerfire.wav", 0.2, _make_sweep, 120)
-    sounds["invader_killed"] = _make_sound("sounds/invaderdie.wav", 0.45, _make_noise, 90)
-    sounds["player_death"] = _make_sound("sounds/explosion.wav", 0.55, _make_noise, 500)
-    sounds["ufo"] = _make_sound("sounds/ufo.wav", 0.4, _make_ufo, 600)
-    sounds["ufo_killed"] = _make_sound("sounds/ufodie.wav", 0.5, _make_noise, 250)
-    sounds["extra_life"] = _make_sound("sounds/extralife.wav", 0.6, _make_sweep, 500)
+    sounds["bass"] = [_make_sound(0.8, synth.si_march, f) for f in (53.650, 50.114, 46.178, 62.465)] # four-note bass heartbeat.
+    sounds["shoot"] = _make_sound(0.2, synth.si_playerfire)
+    sounds["invader_killed"] = _make_sound(0.45, synth.si_aliendie)
+    sounds["player_death"] = _make_sound(0.55, synth.si_explosion)
+    sounds["ufo"] = _make_sound(0.2, synth.si_ufo)
+    sounds["ufo_killed"] = _make_sound(0.5, synth.si_ufodie)
+    sounds["extra_life"] = _make_sound(0.6, synth.si_extralife)
     return sounds
 
 
@@ -914,25 +857,25 @@ class Game:
 
     def _play(self, name, loops=0):
         """Start playing a sound"""
-        if _sound_ok and not self.mute and name in self.sounds:
+        if SOUND_OK and not self.mute and name in self.sounds:
             self.sounds[name].play(loops)
 
     def _stop(self, name = "all"):
         """Stop playing a sound or stop all sounds"""
-        if _sound_ok and name == "all":
+        if SOUND_OK and name == "all":
             pygame.mixer.stop()
-        elif _sound_ok and name in self.sounds:
+        elif SOUND_OK and name in self.sounds:
             self.sounds[name].stop()
 
     def _get_sound(self, name):
         """Look up a sound by name"""
-        if _sound_ok and name in self.sounds:
+        if SOUND_OK and name in self.sounds:
             return self.sounds[name]
         return None
 
     def _play_bass_note(self):
         """Play one of the four bass notes in order"""
-        if _sound_ok and not self.mute:
+        if SOUND_OK and not self.mute:
             self.sounds["bass"][self.bass_index].play()
         self.bass_index = (self.bass_index + 1) % 4
 

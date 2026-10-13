@@ -7,7 +7,7 @@
 
 ```bash
 git clone https://github.com/martianmr/spaceinvaders
-pip install pygame
+pip install -r requirements.txt
 python invaders.py
 ```
 
