@@ -153,6 +153,11 @@ def slice(buf, start, end):
     return buf[s:e]
 
 
+def median_filter(buf):
+    """Perform a median filter"""
+    return array.array("d", medfilt(buf, kernel_size=5))
+
+
 def lowpass_filter(buf, cutoff, order=6):
     """Apply a filter that progressively removes frequencies above the cutoff"""
     return _butterworth_filter(buf, cutoff, type='lowpass', order=order)
@@ -362,7 +367,7 @@ def si_explosion():
     buf = lowpass_filter(buf, 350.0, order=1)
     noisalise(buf, gain=0.35)
     buf = lowpass_filter(buf, 2600.0)
-    buf = medfilt(buf, kernel_size=5)
+    buf = median_filter(buf)
     buf = lowpass_filter(buf, 2600.0)
     envelope(buf, 20, 0, 1.0, 20, start=0, end=100)
     envelope(buf, 20, 0, 1.0, 20, start=100, end=180)
@@ -410,7 +415,7 @@ def si_march(freq=53.650):
     buf = make_sin(ms, 1.0, freq)
     buf = constrain(buf, 0.5, 1.0)
     buf = vmove(buf, -0.6)
-    buf = buf = array.array("d", medfilt(buf, kernel_size=5))
+    buf = median_filter(buf)
     envelope(buf, 5, 0, 1.0, 5)
     echo(buf, 20, 0.3)
     return tobytes(buf)
