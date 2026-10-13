@@ -271,6 +271,8 @@ def envelope(buf, attack, decay, sustain, release, start=0, end=MAX_LEN):
 def echo(buf, ms, vol):
     """Modify buffer in place to add a short delay to the sound"""
     delay = int(SAMPLE_RATE * ms / 1000.0)
+    for _ in range(delay):
+        buf.append(0.0)
     for i in range(len(buf)):
         buf[i] *= 1 - vol
         if i >= delay:
@@ -294,9 +296,11 @@ def si_extralife():
     envelope(buf, 20, 0, 1.0, 20, end=200)
     for i in range(8):
         s = i * 145 + 200
-        e = s + 145
+        e = s + 135
+        mute = e + 10
         envelope(buf, 30, 0, 0.9, 30, start=s, end=e)
-    echo(buf, 20, 0.3)
+        envelope(buf, 0, 0, 0.0, 0, start=e, end=mute)
+    echo(buf, 30, 0.4)
     return tobytes(buf)
 
 
@@ -319,7 +323,6 @@ def si_ufo():
     low = 400.0
     high = 1550.0
     buf = make_sweep(170, low, high, _square, 0.4, 170)
-    echo(buf, 20, 0.3)
     return tobytes(buf)
 
 
@@ -359,7 +362,7 @@ def si_explosion():
     envelope(buf, 20, 0, 1.0, 20, start=400, end=450)
     envelope(buf, 20, 0, 1.0, 20, start=450, end=500)
     envelope(buf, 20, 20, 0.6, 500, start=500)
-    echo(buf, 20, 0.3)
+    echo(buf, 80, 0.5)
     return tobytes(buf)
 
 
@@ -370,22 +373,22 @@ def si_playerfire():
     buf = make_white(ms, 1.0)
     noisebuf = make_white(ms, 0.7)
     start = slice(buf, 0, 300)
-    for _ in range(5):
+    for _ in range(10):
         start = lowpass_filter(start, freq, order=6)
         start = highpass_filter(start, freq, order=6)
     mid = slice(buf, 300, 350)
-    for _ in range(5):
+    for _ in range(20):
         mid = lowpass_filter(mid, freq - 75, order=6)
         mid = highpass_filter(mid, freq - 75, order=6)
     end = slice(buf, 350, 400)
-    for _ in range(5):
+    for _ in range(30):
         end = lowpass_filter(end, freq - 150, order=6)
         end = highpass_filter(end, freq - 150, order=6)
     buf = start + mid + end
     noisalise(buf, gain=0.15)
     buf = combine(buf, noisebuf)
-    envelope(buf, 10, 0, 1.0, 200)
-    echo(buf, 20, 0.3)
+    envelope(buf, 10, 0, 1.0, 100)
+    echo(buf, 60, 0.5)
     return tobytes(buf)
 
 
@@ -398,7 +401,7 @@ def si_march(freq=53.650):
     buf = make_sin(ms, 1.0, freq)
     buf = constrain(buf, 0.5, 1.0)
     buf = vmove(buf, -0.6)
-    buf = medfilt(buf, kernel_size=5)
+    buf = buf = array.array("d", medfilt(buf, kernel_size=5))
     envelope(buf, 5, 0, 1.0, 5)
     echo(buf, 20, 0.3)
     return tobytes(buf)

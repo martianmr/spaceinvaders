@@ -80,7 +80,7 @@ BUNKER_Y = SCREEN_HEIGHT - 48 * SCALE
 # Audio
 # ---------------------------------------------------------------------------
 
-SAMPLE_RATE = 22050
+SAMPLE_RATE = 44100
 SOUND_OK = False
 
 
