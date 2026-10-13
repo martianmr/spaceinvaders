@@ -211,6 +211,17 @@ def make_white(ms=600, vol=0.4):
     return buf
 
 
+def make_digiwhite(ms=600, vol=0.4):
+    """Fill a buffer with 1.0 or -1.0 randomly to produce white noise similar to the 76477 chip"""
+    n = int(SAMPLE_RATE * ms / 1000.0)
+    buf = array.array("d")
+    random.seed(0)
+    rng = random.Random()
+    for _ in range(n):
+        buf.append((1.0 if rng.uniform(-1.0, 1.0) > 0.0 else -1.0) * vol)
+    return buf
+
+
 def make_brown(ms=600, vol=0.4, freq=150.0):
     """Apply a lowpass filter to white noise to produce brown noise"""
     buf = make_white(ms, vol)
@@ -347,7 +358,7 @@ def si_aliendie():
 def si_explosion():
     """Return bytes representing Space Invaders player exploding sound"""
     ms = 1600
-    buf = make_white(ms, 1.0)
+    buf = make_digiwhite(ms, 1.0)
     buf = lowpass_filter(buf, 350.0, order=1)
     noisalise(buf, gain=0.35)
     buf = lowpass_filter(buf, 2600.0)
@@ -370,23 +381,21 @@ def si_playerfire():
     """Return bytes representing Space Invaders player firing sound"""
     ms = 400
     freq = 2200.0
-    buf = make_white(ms, 1.0)
-    noisebuf = make_white(ms, 0.7)
+    buf = make_digiwhite(ms, 1.0)
     start = slice(buf, 0, 300)
-    for _ in range(10):
+    for _ in range(5):
         start = lowpass_filter(start, freq, order=6)
         start = highpass_filter(start, freq, order=6)
     mid = slice(buf, 300, 350)
-    for _ in range(20):
+    for _ in range(5):
         mid = lowpass_filter(mid, freq - 75, order=6)
         mid = highpass_filter(mid, freq - 75, order=6)
     end = slice(buf, 350, 400)
-    for _ in range(30):
+    for _ in range(5):
         end = lowpass_filter(end, freq - 150, order=6)
         end = highpass_filter(end, freq - 150, order=6)
     buf = start + mid + end
     noisalise(buf, gain=0.15)
-    buf = combine(buf, noisebuf)
     envelope(buf, 10, 0, 1.0, 100)
     echo(buf, 60, 0.5)
     return tobytes(buf)
