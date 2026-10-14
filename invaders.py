@@ -44,8 +44,7 @@ GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
-HIGH_SCORE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                               "highscore.txt")
+HIGH_SCORE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "highscore.txt")
 EXTRA_LIFE_SCORE = 1500
 
 UFO_TIME = 1536             # Frames before UFO appears after initial top row drop or new wave

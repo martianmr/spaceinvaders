@@ -205,25 +205,19 @@ def make_sin(ms=600, vol=0.4, freq=50.0, harmonics=0):
     return buf
 
 
-def make_white(ms=600, vol=0.4):
-    """Fill a buffer with random amplitudes to produce white noise"""
+def make_white(ms=600, vol=0.4, smooth=False):
+    """Fill a buffer with random amplitudes to produce white noise
+    
+    If smooth is False use values of 1.0 or -1.0 randomly to produce white noise similar to the SN76477 Complex Sound Generator chip,
+    otherwise generate purely random amplitudes which gives a more natural noise.
+    """
     n = int(SAMPLE_RATE * ms / 1000.0)
     buf = array.array("d")
     random.seed(0)
     rng = random.Random()
     for _ in range(n):
-        buf.append(rng.uniform(-1.0, 1.0) * vol)
-    return buf
-
-
-def make_digiwhite(ms=600, vol=0.4):
-    """Fill a buffer with 1.0 or -1.0 randomly to produce white noise similar to the 76477 chip"""
-    n = int(SAMPLE_RATE * ms / 1000.0)
-    buf = array.array("d")
-    random.seed(0)
-    rng = random.Random()
-    for _ in range(n):
-        buf.append((1.0 if rng.uniform(-1.0, 1.0) > 0.0 else -1.0) * vol)
+        r = rng.uniform(-1.0, 1.0) * vol
+        buf.append(r if smooth else 1.0 if r > 0.0 else -1.0)
     return buf
 
 
@@ -325,10 +319,6 @@ def si_ufodie():
     low = 150.0
     high = 1320.0
     buf = make_sweep(2210, low, high, _triangle, 0.5, 170)
-    noisebuf = make_brown(2210, 0.2, 2600)
-    envelope(noisebuf, 0, 0, 0.0, 0, end=1760)
-    envelope(noisebuf, 350, 0, 0.0, 0, start=1760)
-    buf = combine(buf, noisebuf)
     envelope(buf, 10, 0, 1.0, 350)
     echo(buf, 20, 0.3)
     return tobytes(buf)
@@ -363,7 +353,7 @@ def si_aliendie():
 def si_explosion():
     """Return bytes representing Space Invaders player exploding sound"""
     ms = 1600
-    buf = make_digiwhite(ms, 1.0)
+    buf = make_white(ms, 1.0)
     buf = lowpass_filter(buf, 350.0, order=1)
     noisalise(buf, gain=0.35)
     buf = lowpass_filter(buf, 2600.0)
@@ -386,7 +376,7 @@ def si_playerfire():
     """Return bytes representing Space Invaders player firing sound"""
     ms = 400
     freq = 2200.0
-    buf = make_digiwhite(ms, 1.0)
+    buf = make_white(ms, 1.0)
     start = slice(buf, 0, 300)
     for _ in range(5):
         start = lowpass_filter(start, freq, order=6)
