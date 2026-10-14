@@ -375,7 +375,7 @@ def si_explosion():
 def si_playerfire():
     """Return bytes representing Space Invaders player firing sound"""
     ms = 400
-    freq = 2200.0
+    freq = 2490.0
     buf = make_white(ms, 1.0)
     start = slice(buf, 0, 300)
     for _ in range(5):
@@ -392,7 +392,7 @@ def si_playerfire():
     buf = start + mid + end
     noisalise(buf, gain=0.15)
     envelope(buf, 10, 0, 1.0, 100)
-    echo(buf, 60, 0.5)
+    echo(buf, 40, 0.4)
     return tobytes(buf)
 
 
