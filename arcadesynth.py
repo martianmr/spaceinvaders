@@ -58,7 +58,7 @@ def _samplept(func, i, f, harmonics=0, p=[]):
 
 def _sawtooth(phase):
     """Calculate amplitude for a sawtooth wave at the given phase"""
-    return ((2.0 / math.pi) * (math.pi + ((phase / 2.0) % math.pi - math.pi)) - 1.0)
+    return (2.0 / math.pi) * ((phase / 2.0) % math.pi) - 1.0
 
 
 def _triangle(phase):
