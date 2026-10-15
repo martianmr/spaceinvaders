@@ -796,7 +796,7 @@ class Game:
             ShotType.PLUNGER.value : 0,
             ShotType.SQUIGGLY.value : 0
         } # index of current shot in shot_column
-        self.bass_index = 1
+        self.bass_index = 0
         self.bass_timer = 0
         self.last_shot_scan = "left"
 
