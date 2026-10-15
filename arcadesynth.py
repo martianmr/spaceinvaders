@@ -342,7 +342,7 @@ def si_aliendie():
     for i in range(len(params["amplitude"])):
         s = 1500.0 if i < len(params["amplitude"]) - 1 else 1900.0
         f = 200.0 if 1 < len(params["amplitude"]) - 1 else 1100.0
-        tempbuf = make_sweep(params["length"][i], s, f, _triangle, params["amplitude"][i], 0, 3)
+        tempbuf = make_sweep(params["length"][i], s, f, _triangle, params["amplitude"][i], 0)
         envelope(tempbuf, 5, 0, 1.0, 5)
         buf += tempbuf
     envelope(buf, 5, 0, 1.0, 300)
