@@ -1204,10 +1204,6 @@ class Game:
         ]
         self.shot_timer = (self.shot_timer + 1) % len(shot_times) # timer advances 0, 1, 2 every frame and then starts again at 0
 
-        if self.enemy_fire_wait > 0:
-            self.enemy_fire_wait -=1
-            return # Don't process enemy fire for a while at start of wave or after player death
-
         shot_frame = shot_times[self.shot_timer]    # Shot types and scan sides to process now
         for task in shot_frame:                     # Loop through shot types and scans
             if  task["type"] == ShotType.ROLLING.value:
@@ -1234,7 +1230,7 @@ class Game:
                 continue # if we processed an existing shot don't attempt to fire the same shot
 
             # Check if we're OK to try and create a shot from the invaders
-            if self.invaders and self.death_pause <= 0 and self.enemy_shots[task["type"]] is None:
+            if self.invaders and self.death_pause <= 0 and self.enemy_fire_wait <= 0 and self.enemy_shots[task["type"]] is None:
                 for r in self.reload_times:
                     if self.state == "demo":
                         reload_time = 8 # Reload rate during demo is always 8
@@ -1297,6 +1293,10 @@ class Game:
                             False,
                             type = task["type"]
                         ) # We have a valid column, take the shot!
+
+        # Decrement counter that prevents invaders from firing for a while at start of wave and after player death
+        if self.enemy_fire_wait > 0:
+            self.enemy_fire_wait -=1
 
     def _update_ufo(self):
         """Check if we need to launch or remove a UFO and move it if it's on screen"""
