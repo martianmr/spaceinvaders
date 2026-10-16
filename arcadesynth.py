@@ -33,7 +33,7 @@ def _butterworth_filter(buf, cutoff, type='lowpass', order=2):
 
 def _samplept(func, i, f, harmonics=0, p=[]):
     """Calculate amplitude of a sample for a buffer position
-    
+
     Given a function to calculate amplitude of a wave (func) for a buffer position (i)
     and frequency (f) calculate and return the amplitude.
     If harmonics is not zero also add in the amplitude of the given order of harmonics.
@@ -83,7 +83,7 @@ def _sin(phase):
 
 def init(frequency=DEFAULT_FREQUENCY, channels=DEFAULT_CHANNELS):
     """Set up sample rate, do this first to avoid using defaults
-    
+
     E.g. get these values from pygame with 'frequency, _, channels = pygame.mixer.get_init()'
     """
     global SAMPLE_RATE
@@ -93,7 +93,7 @@ def init(frequency=DEFAULT_FREQUENCY, channels=DEFAULT_CHANNELS):
 
 def tobytes(buf):
     """Convert buffer with range -1.0 to 1.0 to short signed integers then output as a byte stream
-    
+
     Use this to convert a sound held in internal format to a byte list for external processing, e.g. by
     pygame.
     """
@@ -207,7 +207,7 @@ def make_sin(ms=600, vol=0.4, freq=50.0, harmonics=0):
 
 def make_white(ms=600, vol=0.4, smooth=False):
     """Fill a buffer with random amplitudes to produce white noise
-    
+
     If smooth is False use values of 1.0 or -1.0 randomly to produce white noise similar to the SN76477 Complex Sound Generator chip,
     otherwise generate purely random amplitudes which gives a more natural noise.
     """
@@ -230,7 +230,7 @@ def make_brown(ms=600, vol=0.4, freq=150.0):
 
 def make_sweep(ms=80, startf=1500.0, endf=400.0, shape=_triangle, vol=1.0, repeat=0, harmonics=0):
     """Create a buffer that starts at frequency startf and ends at endf
-    
+
     If repeat is not zero the cycle goes from startf to endf and back to startf in repeat milliseconds and
     continues to cycle until ms milliseconds have been filled.
     """
@@ -398,7 +398,7 @@ def si_playerfire():
 
 def si_march(freq=53.650):
     """Return bytes representing Space Invaders low-frequency marching sound
-    
+
     Expected frequencies in Hz, 53.650, 50.114, 46.178, 62.465
     """
     ms = 80

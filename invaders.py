@@ -318,7 +318,7 @@ class Bunker:
 
     def damage(self, shot, force = False):
         """Erode the bunker from explosion sprite.
-        
+
         First check each pixel in the shot sprite and remove those pixels from the bunker. If we removed anything the shot hit the bunker so
         remove all the shot explosion pixels as well. Return if we changed so the shot knows if it's exploding or not.
         """
@@ -696,7 +696,7 @@ class Game:
             self.extra_life_available = False
             self.lives += 1
 
-        
+
         self._update_bass(dt)
 
         if self.state == "playing": # Move the player based on keyboard input
@@ -804,7 +804,7 @@ class Game:
 
     def _update_enemy_fire(self):
         """Update enemy shots and check for new shots.
-        
+
         There are three types or shot as enumerated in the ShotType class, using the naming conventions from
         https://www.computerarcheology.com/Arcade/SpaceInvaders/ they are:
         0 - ROLLING shot
@@ -1067,7 +1067,7 @@ class Game:
                     shot.rect.y -= shot.dy
                     shot.explode(immediate = True) # in the original, shots take a frame to check if they hit a bunker, in this case explode it immediately
                     bunker.damage(shot, force = True) # use the logic for eroding the bunkers but don't bother checking for hit, just erode it
-                    
+
             for inv in self.invaders:
                 if inv.rect.colliderect(bunker.rect):
                     bunker.stomp(inv)
