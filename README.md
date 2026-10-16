@@ -16,7 +16,7 @@ python invaders.py
 <img src="./images/screenshot03.png" alt="Screenshot 3" width="400"/><img src="./images/screenshot04.png" alt="Screenshot 4" width="400"/>
 <img src="./images/screenshot05.png" alt="Screenshot 5" width="400"/><img src="./images/screenshot06.png" alt="Screenshot 6" width="400"/>
 <img src="./images/screenshot07.png" alt="Screenshot 7" width="400"/><img src="./images/screenshot08.png" alt="Screenshot 8" width="400"/>
-<img src="./images/screenshot09.png" alt="Screenshot 9" width="400"/><img src="./images/screenshot10.png" alt="Screenshot 10" width="400"/>
+<img src="./images/screenshot09a.png" alt="Screenshot 9" width="400"/><img src="./images/screenshot10a.png" alt="Screenshot 10" width="400"/>
 
 ## 👾 References
 
