@@ -1285,13 +1285,14 @@ class Game:
 
         message = "HIGH CCORES" if variant and self.hiscore_count < 445 else "HIGH SCORES"
 
-        self._draw_center_text(message, self.fontred, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 180)
+        self._draw_center_text(message, self.fontred, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 180)
+        max_name_len = max(len(self.high_score_table[i]["name"]) for i in range(10))
+        max_score_len = len(str(self.high_score))
         for i in range(10):
             font = self.fontgreen if self.high_score_table[i]["highlight"] else self.fontwhite
-            self._draw_text(str(self.high_score_table[i]["score"]), font,
-                            FONT_MEDIUM, SCREEN_WIDTH // 2 - 57, SCREEN_HEIGHT // 2 - 126 + (i * 27), "right")
-            self._draw_text(self.high_score_table[i]["name"], font,
-                            FONT_MEDIUM, SCREEN_WIDTH // 2 - 24, SCREEN_HEIGHT // 2 - 126 + (i * 27), "left")
+            # Pad high scores and draw centered
+            self._draw_center_text(f'{self.high_score_table[i]["score"]:>{max_score_len}} {self.high_score_table[i]["name"]:<{max_name_len}}', 
+                                    font, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 126 + (i * 27))
         self._draw_legend()
 
         # Animation of squid blowing up 'C'
