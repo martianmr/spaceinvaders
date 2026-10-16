@@ -1100,7 +1100,6 @@ TEXT = ( # Start at ASCII 32
 
 def text_to_sprite(chars):
     """Convert text characters to index numbers in the font sprite buffer"""
-    chars = chars.upper()
     buf = []
     for i in range(len(chars)):
         if ord(chars[i]) >= ord(' ') and ord(chars[i]) <= ord('~'):
