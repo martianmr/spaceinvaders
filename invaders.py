@@ -29,6 +29,7 @@ import pygame
 from enum import Enum
 
 import arcadesynth as synth
+import sprite
 
 # ---------------------------------------------------------------------------
 # Setup
@@ -57,6 +58,10 @@ TITLE_TIME = 900            # Frames for each title screen
 # ---------------------------------------------------------------------------
 
 SCALE = 3          # number of screen pixels to each sprite pixel
+
+FONT_SMALL = 2
+FONT_MEDIUM = 3
+FONT_LARGE = 9
 
 SCREEN_WIDTH = 224 * SCALE  # Original space invaders is 224*256 (X*Y) 
 SCREEN_HEIGHT = 224 * SCALE # We reduce the Y axis a bit to better fit a landscape monitor
@@ -111,342 +116,6 @@ def init_audio():
     sounds["ufo_killed"] = _make_sound(0.5, synth.si_ufodie)
     sounds["extra_life"] = _make_sound(0.6, synth.si_extralife)
     return sounds
-
-
-# ---------------------------------------------------------------------------
-# Sprite data
-# ---------------------------------------------------------------------------
-
-SQUID = (
-    "...XX...",
-    "..XXXX..",
-    ".XXXXXX.",
-    "XX.XX.XX",
-    "XXXXXXXX",
-    "..X..X..",
-    ".X.XX.X.",
-    "X.X..X.X",
-), (
-    "...XX...",
-    "..XXXX..",
-    ".XXXXXX.",
-    "XX.XX.XX",
-    "XXXXXXXX",
-    ".X.XX.X.",
-    "X......X",
-    ".X....X.",
-)
-
-CRAB = (
-    "..X.....X..",
-    "X..X...X..X",
-    "X.XXXXXXX.X",
-    "XXX.XXX.XXX",
-    "XXXXXXXXXXX",
-    ".XXXXXXXXX.",
-    "..X.....X..",
-    ".X.......X.",
-), (
-    "..X.....X..",
-    "...X...X...",
-    "..XXXXXXX..",
-    ".XX.XXX.XX.",
-    "XXXXXXXXXXX",
-    "X.XXXXXXX.X",
-    "X.X.....X.X",
-    "...XX.XX...",
-)
-
-OCTOPUS = (
-    "....XXXX....",
-    ".XXXXXXXXXX.",
-    "XXXXXXXXXXXX",
-    "XXX..XX..XXX",
-    "XXXXXXXXXXXX",
-    "...XX..XX...",
-    "..XX.XX.XX..",
-    "XX........XX",
-), (
-    "....XXXX....",
-    ".XXXXXXXXXX.",
-    "XXXXXXXXXXXX",
-    "XXX..XX..XXX",
-    "XXXXXXXXXXXX",
-    "..XXX..XXX..",
-    ".XX..XX..XX.",
-    "...XX..XX...",
-)
-
-ENEMY_DEAD = (
-    "....X...X....",
-    ".X...X.X...X.",
-    "..X.......X..",
-    "...X.....X...",
-    "XX.........XX",
-    "...X.....X...",
-    "..X..X.X..X..",
-    ".X..X...X..X.",
-)
-
-PLAYER = (
-    "......X......",
-    ".....XXX.....",
-    ".....XXX.....",
-    ".XXXXXXXXXXX.",
-    "XXXXXXXXXXXXX",
-    "XXXXXXXXXXXXX",
-    "XXXXXXXXXXXXX",
-    "XXXXXXXXXXXXX",
-)
-
-PLAYER_DEAD = (
-    "......X.........",
-    "...........X....",
-    "......X.X.X.....",
-    "...X..X.........",
-    ".......XX.XX....",
-    ".X...X.XX.X.X...",
-    "...XXXXXXXX..X..",
-    "..XXXXXXXXXX.X.X",
-), (
-    "...X.........X..",
-    "X.....X....XX..X",
-    "...X....XX......",
-    "......X.......X.",
-    ".X..X.XX..XX...X",
-    "..X....XXX...X..",
-    "...XXXXXXXXX....",
-    "..XX.XXXXXXX..X.",
-)
-
-UFO_SPRITE = (
-    ".....XXXXXX.....",
-    "...XXXXXXXXXX...",
-    "..XXXXXXXXXXXX..",
-    ".XX.XX.XX.XX.XX.",
-    "XXXXXXXXXXXXXXXX",
-    "..XXX..XX..XXX..",
-    "...X........X...",
-)
-
-UFO_EXPLODE = (
-    "..X..X.X......X.X..X.",
-    "...X........XX....X..",
-    "X.X...XXXX...XX......",
-    ".....XXXXXXX..XXX..X.",
-    "....XXX.X.X.X..XXX..X",
-    "..X...XXXXX...XX.....",
-    "X......X.X...XX...X..",
-    "..X...X...X....X.....",
-)
-
-# The bunker shield: a 22 x 16 block with an arched notch at the bottom.
-BUNKER = (
-    "....XXXXXXXXXXXXXX....",
-    "...XXXXXXXXXXXXXXXX...",
-    "..XXXXXXXXXXXXXXXXXX..",
-    ".XXXXXXXXXXXXXXXXXXXX.",
-    "XXXXXXXXXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXX",
-    "XXXXXXX.......XXXXXXXX",
-    "XXXXXX.........XXXXXXX",
-    "XXXXX...........XXXXXX",
-    "XXXXX...........XXXXXX",
-)
-
-GROUND = (('X' * (SCREEN_WIDTH // SCALE)),)
-
-PLAYER_SHOT = (
-    "X",
-    "X",
-    "X",
-    "X",
-),
-
-ENEMY_SHOTS = ((
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-), (
-    ".X.",
-    ".X.",
-    "XX.",
-    ".XX",
-    ".X.",
-    "XX.",
-    ".XX",
-), (
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-), (
-    ".XX",
-    "XX.",
-    ".X.",
-    ".XX",
-    "XX.",
-    ".X.",
-    ".X.",
-)), ((
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    "XXX",
-), (
-    ".X.",
-    ".X.",
-    ".X.",
-    "XXX",
-    ".X.",
-    ".X.",
-), (
-    ".X.",
-    ".X.",
-    "XXX",
-    ".X.",
-    ".X.",
-    ".X.",
-), (
-    "XXX",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-    ".X.",
-)), ((
-    ".X.",
-    "X..",
-    ".X.",
-    "..X",
-    ".X.",
-    "X..",
-    ".X.",
-), (
-    "X..",
-    ".X.",
-    "..X",
-    ".X.",
-    "X..",
-    ".X.",
-    "..X",
-), (
-    ".X.",
-    "..X",
-    ".X.",
-    "X..",
-    ".X.",
-    "..X",
-    ".X.",
-), (
-    "..X",
-    ".X.",
-    "X..",
-    ".X.",
-    "..X",
-    ".X.",
-    "X..",
-))
-
-ENEMY_SHOT_EXPLODE = (
-    "..X...",
-    "X...X.",
-    "..XX.X",
-    ".XXXX.",
-    "X.XXX.",
-    ".XXXXX",
-    "X.XXX.",
-    ".X.X.X",
-)
-
-PLAYER_SHOT_EXPLODE = (
-    "X...X..X",
-    "..X...X.",
-    ".XXXXXX.",
-    "XXXXXXXX",
-    "XXXXXXXX",
-    ".XXXXXX.",
-    "..X..X..",
-    "X..X...X",
-)
-
-UPSIDE_DOWN_Y = (
-    ".....",
-    "..X..",
-    "..X..",
-    "..X..",
-    "..X..",
-    ".X.X.",
-    "X...X",
-    "X...X",
-)
-
-SQUID_PULLING_Y = (
-    "..........XX...",
-    "....X....XXXX..",
-    "....X...XXXXXX.",
-    "....XX.XX.XX.XX",
-    "....X.XXXXXXXXX",
-    "...X.X...X..X..",
-    "..X...X.X.XX.X.",
-    "..X...XX.X..X.X",
-), (
-    "..........XX...",
-    "...X.....XXXX..",
-    "...X....XXXXXX.",
-    "...XXX.XX.XX.XX",
-    "...X..XXXXXXXXX",
-    "..X.X...X.XX.X.",
-    ".X...X.X......X",
-    ".X...X..X....X.",
-)
-
-SQUID_PUSHING_Y = (
-    "..........XX...",
-    ".X...X...XXXX..",
-    ".X...XX.XXXXXX.",
-    "..X.X.XXX.XX.XX",
-    "...X..XXXXXXXXX",
-    "...X.....X..X..",
-    "...X....X.XX.X.",
-    "...X...X.X..X.X",
-), (
-    "..........XX...",
-    "X...X....XXXX..",
-    "X...XX..XXXXXX.",
-    ".X.X.XXXX.XX.XX",
-    "..X...XXXXXXXXX",
-    "..X.....X.XX.X.",
-    "..X....X......X",
-    "..X.....X....X.",
-)
-
-
-def build_sprite(rows, color, scale=SCALE):
-    """Turn a list of 'X'/'.' strings into a scaled pygame.Surface."""
-    height = len(rows)
-    width = len(rows[0])
-    surf = pygame.Surface((width * scale, height * scale), pygame.SRCALPHA)
-    for y, row in enumerate(rows):
-        for x, ch in enumerate(row):
-            if ch == "X":
-                surf.fill(color, (x * scale, y * scale, scale, scale))
-    return surf
 
 
 # ---------------------------------------------------------------------------
@@ -657,13 +326,13 @@ class Bunker:
         cy = (shot.rect.top - self.rect.y) // SCALE
         changed = False
         if shot.friendly:
-            changed = self.damage_from_rows(PLAYER_SHOT[0], cx, cy, test = True)
+            changed = self.damage_from_rows(sprite.PLAYER_SHOT[0], cx, cy, test = True)
             if changed:
-                self.damage_from_rows(PLAYER_SHOT_EXPLODE, cx + shot.xoff, cy + shot.yoff)
+                self.damage_from_rows(sprite.PLAYER_SHOT_EXPLODE, cx + shot.xoff, cy + shot.yoff)
         else:
-            changed = self.damage_from_rows(ENEMY_SHOTS[shot.type][shot.frame], cx, cy)
+            changed = self.damage_from_rows(sprite.ENEMY_SHOTS[shot.type][shot.frame], cx, cy)
             if changed or force:
-                self.damage_from_rows(ENEMY_SHOT_EXPLODE, cx + shot.xoff, cy + shot.yoff)
+                self.damage_from_rows(sprite.ENEMY_SHOT_EXPLODE, cx + shot.xoff, cy + shot.yoff)
         if changed or force:
             self._rebuild()
         return changed
@@ -687,34 +356,30 @@ class Game:
         self.clock = pygame.time.Clock()
         self.sounds = init_audio()
         self.mute = True
-        
-        # Attempt to load spaceinvaders font
-        space_invaders_font = "fonts/space_invaders.ttf" if os.path.exists("fonts/space_invaders.ttf") else None
-        font_size = [16, 24, 72] if space_invaders_font is not None else [24, 40, 96]
-        self.font_small = pygame.font.Font(space_invaders_font, font_size[0])
-        self.font_medium = pygame.font.Font(space_invaders_font, font_size[1])
-        self.font_large = pygame.font.Font(space_invaders_font, font_size[2])
 
         # Pre-render sprites.
-        self.squid = [build_sprite(f, WHITE) for f in SQUID]
-        self.crab = [build_sprite(f, WHITE) for f in CRAB]
-        self.octopus = [build_sprite(f, WHITE) for f in OCTOPUS]
-        self.enemy_dead = build_sprite(ENEMY_DEAD, WHITE)
-        self.player_img = build_sprite(PLAYER, GREEN)
-        self.player_dead_img = [build_sprite(f, GREEN) for f in PLAYER_DEAD]
-        self.player_shot = [build_sprite(f, WHITE) for f in PLAYER_SHOT]
-        self.player_shot_explode = build_sprite(PLAYER_SHOT_EXPLODE, WHITE)
-        self.ufo_img = build_sprite(UFO_SPRITE, RED)
-        self.ufo_dead = build_sprite(UFO_EXPLODE, RED)
-        self.enemy_shot = [[build_sprite(f, WHITE) for f in i] for i in ENEMY_SHOTS]
-        self.enemy_shot_explode = build_sprite(ENEMY_SHOT_EXPLODE, WHITE)
-        self.ufo_icon = build_sprite(UFO_SPRITE, RED, scale=2)
-        self.squid_icon = build_sprite(SQUID[0], GREEN, scale=2)
-        self.crab_icon = build_sprite(CRAB[0], GREEN, scale=2)
-        self.octopus_icon = build_sprite(OCTOPUS[0], GREEN, scale=2)
-        self.upside_down_y = build_sprite(UPSIDE_DOWN_Y, WHITE)
-        self.squid_pulling_y = [build_sprite(f, WHITE) for f in SQUID_PULLING_Y]
-        self.squid_pushing_y = [build_sprite(f, WHITE) for f in SQUID_PUSHING_Y]
+        self.squid = [sprite.build_sprite(f, WHITE, SCALE) for f in sprite.SQUID]
+        self.crab = [sprite.build_sprite(f, WHITE, SCALE) for f in sprite.CRAB]
+        self.octopus = [sprite.build_sprite(f, WHITE, SCALE) for f in sprite.OCTOPUS]
+        self.enemy_dead = sprite.build_sprite(sprite.ENEMY_DEAD, WHITE, SCALE)
+        self.player_img = sprite.build_sprite(sprite.PLAYER, GREEN, SCALE)
+        self.player_dead_img = [sprite.build_sprite(f, GREEN, SCALE) for f in sprite.PLAYER_DEAD]
+        self.player_shot = [sprite.build_sprite(f, WHITE, SCALE) for f in sprite.PLAYER_SHOT]
+        self.player_shot_explode = sprite.build_sprite(sprite.PLAYER_SHOT_EXPLODE, WHITE, SCALE)
+        self.ufo_img = sprite.build_sprite(sprite.UFO_SPRITE, RED, SCALE)
+        self.ufo_dead = sprite.build_sprite(sprite.UFO_EXPLODE, RED, SCALE)
+        self.enemy_shot = [[sprite.build_sprite(f, WHITE, SCALE) for f in i] for i in sprite.ENEMY_SHOTS]
+        self.enemy_shot_explode = sprite.build_sprite(sprite.ENEMY_SHOT_EXPLODE, WHITE, SCALE)
+        self.ufo_icon = sprite.build_sprite(sprite.UFO_SPRITE, RED, 2)
+        self.squid_icon = sprite.build_sprite(sprite.SQUID[0], GREEN, 2)
+        self.crab_icon = sprite.build_sprite(sprite.CRAB[0], GREEN, 2)
+        self.octopus_icon = sprite.build_sprite(sprite.OCTOPUS[0], GREEN, 2)
+        self.upside_down_y = sprite.build_sprite(sprite.UPSIDE_DOWN_Y, WHITE, SCALE)
+        self.squid_pulling_y = [sprite.build_sprite(f, WHITE, SCALE) for f in sprite.SQUID_PULLING_Y]
+        self.squid_pushing_y = [sprite.build_sprite(f, WHITE, SCALE) for f in sprite.SQUID_PUSHING_Y]
+        self.fontwhite = sprite.rendertext(WHITE)
+        self.fontgreen = sprite.rendertext(GREEN)
+        self.fontred = sprite.rendertext(RED)
 
         # Initial values for the high score table
         self.high_score_table = self._load_high_score()
@@ -745,7 +410,7 @@ class Game:
         """Load the high score table from a file or default if not found"""
         high_scores = []
         for _ in range(10):
-            high_scores.append({"score": 0, "name": "..............", "highlight": False})
+            high_scores.append({"score": 0, "name": "............", "highlight": False})
         try:
             with open(HIGH_SCORE_FILE) as f:
                 lines = f.read().splitlines()
@@ -754,7 +419,7 @@ class Game:
                     if count % 2 == 0:
                         score = int(line or 0)
                     else:
-                        name = line or ".............."
+                        name = line or "............"
                         high_scores.append({"score": score, "name": name, "highlight": False})
                     count += 1
                     if count > 20:
@@ -841,12 +506,13 @@ class Game:
 
     def _build_bunkers(self):
         """Build 4 bunkers above the player then add an extra bunker structure for the ground line"""
+        GROUND = (('X' * (SCREEN_WIDTH // SCALE)),)
         bunkers = []
         n = 4
         span = 45 * SCALE
         for i in range(n):
             x = (32 * SCALE) + (span * i)
-            bunkers.append(Bunker(BUNKER, x, BUNKER_Y))
+            bunkers.append(Bunker(sprite.BUNKER, x, BUNKER_Y))
         bunkers.append(Bunker(GROUND, 0, SCREEN_HEIGHT - SCALE))
         return bunkers
 
@@ -925,7 +591,7 @@ class Game:
                         self.reset()
                         self.score = 0
                         self.mute = False
-                        self._show_message("PLAY  PLAYER <1>")
+                        self._show_message("PLAY PLAYER <1>")
                 elif self.state == "playing":
                     if event.key == pygame.K_SPACE or event.key == pygame.K_LCTRL:
                         self._fire_player()
@@ -1485,12 +1151,12 @@ class Game:
             dead_rect.centery = self.ufo.rect.centery
             self.scratch.blit(self.ufo_dead, dead_rect)
             if self.ufo.dead_timer < 60: # Add the UFO score after a pause
-                self._draw_text(str(self.ufo.bonus), self.font_small, WHITE,
+                self._draw_text(str(self.ufo.bonus), self.fontwhite, FONT_SMALL,
                         self.ufo.rect.centerx, self.ufo.rect.centery, "center")
 
         if self.state == "paused":
             if SHOWPAUSE:
-                self._draw_center_text("PAUSED", self.font_large, GREEN, y=63)
+                self._draw_center_text("PAUSED", self.fontgreen, FONT_LARGE, y=63)
             self.state = self.laststate
             self.laststate = "paused"
         self._draw_hud()
@@ -1507,9 +1173,8 @@ class Game:
             self.state = "paused"
 
         if self.message: # ad hoc message to player
-            self._draw_center_text(self.message, self.font_medium, RED, y=93)
+            self._draw_center_text(self.message, self.fontred, FONT_MEDIUM, y=93)
 
-        
         # resize the screen and apply CRT effect
         self._crt(self.scratch, SCREEN_WIDTH, SCREEN_HEIGHT)
         w, h = self.screen.get_size()
@@ -1538,18 +1203,13 @@ class Game:
 
     def _draw_hud(self):
         """Draw score etc. in smaller font than original to make the game fit a landscape screen a little better"""
-        self._draw_text("SCORE", self.font_small, WHITE, 16, 6, "left")
-        self._draw_text(str(self.score), self.font_small, WHITE, 16, 30,
-                        "left")
-        self._draw_text("HI-SCORE", self.font_small, WHITE,
-                        SCREEN_WIDTH // 2, 6, "top")
-        self._draw_text(str(self.high_score), self.font_small, WHITE,
-                        SCREEN_WIDTH // 2, 30, "top")
-        self._draw_text("WAVE", self.font_small, WHITE,
-                        SCREEN_WIDTH - 16, 6, "right")
+        self._draw_text("SCORE", self.fontwhite, FONT_SMALL, 16, 6, "left")
+        self._draw_text(str(self.score), self.fontwhite, FONT_SMALL, 16, 30, "left")
+        self._draw_text("HI-SCORE", self.fontwhite, FONT_SMALL, SCREEN_WIDTH // 2, 6, "top")
+        self._draw_text(str(self.high_score), self.fontwhite, 2, SCREEN_WIDTH // 2, 30, "top")
+        self._draw_text("WAVE", self.fontwhite, FONT_SMALL, SCREEN_WIDTH - 16, 6, "right")
         wave = self.wave if self.state == "playing" else self.lastwave
-        self._draw_text(str(wave), self.font_small, WHITE,
-                        SCREEN_WIDTH - 16, 30, "right")
+        self._draw_text(str(wave), self.fontwhite, FONT_SMALL, SCREEN_WIDTH - 16, 30, "right")
         if self.state == "playing" or self.state == "paused" or self.state == "demo":
         # Lives as small cannon icons.
             for i in range(self.lives-1):
@@ -1557,27 +1217,27 @@ class Game:
                                             (self.player_img.get_width() // 2,
                                             self.player_img.get_height() // 2))
                 self.scratch.blit(icon, ((i * 24) + 36, SCREEN_HEIGHT - 30))
-            self._draw_text(str(self.lives), self.font_small, WHITE, 9, SCREEN_HEIGHT - 30, "left")
+            self._draw_text(str(self.lives), self.fontwhite, FONT_SMALL, 9, SCREEN_HEIGHT - 30, "left")
 
         if DEBUG:
             # Display shot count and next UFO score for debugging (or cheating)
             ufo_score_table = [100, 50, 50, 100, 150, 100, 100, 50, 300, 100, 100, 100, 50, 150, 100]
             ufo_score_index = (self.player_shot_count+1) % 15
             ufo_bonus = ufo_score_table[ufo_score_index]
-            self._draw_text(f"{self.player_shot_count} {ufo_bonus}", self.font_small, WHITE,
+            self._draw_text(f"{self.player_shot_count} {ufo_bonus}", self.fontwhite, FONT_SMALL,
                     SCREEN_WIDTH - 16, SCREEN_HEIGHT - 30, "right")
 
     def _draw_legend(self):
         """A bottom-of-screen point-value legend."""
         y = SCREEN_HEIGHT - 30
-        self.scratch.blit(self.ufo_icon, (84, y+SCALE))
-        self._draw_text("= ? PTS", self.font_small, WHITE, 126, y, "left")
-        self.scratch.blit(self.squid_icon, (228, y))
-        self._draw_text("= 30 PTS", self.font_small, WHITE, 254, y, "left")
+        self.scratch.blit(self.ufo_icon, (54, y+SCALE))
+        self._draw_text("=? PTS", self.fontwhite, FONT_SMALL, 96, y, "left")
+        self.scratch.blit(self.squid_icon, (208, y))
+        self._draw_text("=30 PTS", self.fontwhite, FONT_SMALL, 234, y, "left")
         self.scratch.blit(self.crab_icon, (354, y))
-        self._draw_text("= 20 PTS", self.font_small, WHITE, 384, y, "left")
-        self.scratch.blit(self.octopus_icon, (488, y ))
-        self._draw_text("= 10 PTS", self.font_small, WHITE, 518, y, "left")
+        self._draw_text("=20 PTS", self.fontwhite, FONT_SMALL, 384, y, "left")
+        self.scratch.blit(self.octopus_icon, (508, y ))
+        self._draw_text("=10 PTS", self.fontwhite, FONT_SMALL, 538, y, "left")
 
     def _draw_title(self):
         """Draw an intro screen with information on game keys"""
@@ -1586,95 +1246,87 @@ class Game:
             variant = False
 
         step1 = self.title_count // 10
-        message1 = "PLA" if variant else "PLAY"
+        message1 = "PLA " if variant else "PLAY"
         length1 = len(message1) + 1 if variant else len(message1)
-        x1 = SCREEN_WIDTH // 2 - SCALE * 3 if variant else SCREEN_WIDTH // 2
         step2 = max(0, self.title_count // 10 - length1 - 4)
         message2 = "SPACE"
         step3 = max(0, self.title_count // 10 - length1 - len(message2) - 8)
         message3 = "INVADERS"
 
-        self._draw_text(message1[:min(step1, len(message1))], self.font_medium, WHITE, 
-                        x1, SCREEN_HEIGHT // 2 - 190, "top")
-        self._draw_center_text(message2[:min(step2, len(message2))], self.font_large, GREEN,
-                               y=SCREEN_HEIGHT // 2 - 160)
-        self._draw_center_text(message3[:min(step3, len(message3))], self.font_large, GREEN,
-                               y=SCREEN_HEIGHT // 2 - 80)
-        self._draw_center_text("PRESS ENTER / SPACE TO START", self.font_medium,
-                               WHITE, y=SCREEN_HEIGHT // 2 + 40)
-        self._draw_center_text("ARROWS / A,D TO MOVE   SPACE / LCTRL TO FIRE",
-                               self.font_small, WHITE, y=SCREEN_HEIGHT // 2 + 80)
-        self._draw_center_text("P TO PAUSE        F FOR FULL SCREEN",
-                               self.font_small, WHITE, y=SCREEN_HEIGHT // 2 + 100)
+        self._draw_center_text(message1[:min(step1, len(message1))], self.fontwhite, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 190)
+        self._draw_center_text(message2[:min(step2, len(message2))], self.fontgreen, FONT_LARGE, SCREEN_HEIGHT // 2 - 160)
+        self._draw_center_text(message3[:min(step3, len(message3))], self.fontgreen, FONT_LARGE, SCREEN_HEIGHT // 2 - 80)
+        self._draw_center_text("PRESS ENTER/SPACE TO START", self.fontwhite, FONT_MEDIUM, SCREEN_HEIGHT // 2 + 30)
+        self._draw_center_text(" ARROWS / A,D - MOVE       ", self.fontwhite, FONT_SMALL, SCREEN_HEIGHT // 2 + 80)
+        self._draw_center_text("SPACE / LCTRL - FIRE       ", self.fontwhite, FONT_SMALL, SCREEN_HEIGHT // 2 + 100)
+        self._draw_center_text("            P - PAUSE      ", self.fontwhite, FONT_SMALL, SCREEN_HEIGHT // 2 + 120)
+        self._draw_center_text("            F - FULL SCREEN", self.fontwhite, FONT_SMALL, SCREEN_HEIGHT // 2 + 140)
         self._draw_legend()
 
         # Animation of squid correcting upside down 'Y'
         if variant: 
             if self.title_count >= 40 and self.title_count < 400:
-                self.scratch.blit(self.upside_down_y, (SCREEN_WIDTH // 2 + SCALE * 6, SCREEN_HEIGHT // 2 - 190))
+                self.scratch.blit(self.upside_down_y, (SCREEN_WIDTH // 2 + SCALE * 8, SCREEN_HEIGHT // 2 - 190))
             if self.title_count >= 300 and self.title_count < 400:
                 anim = (self.title_count // 4) % 2
-                self.scratch.blit(self.squid[anim], (SCREEN_WIDTH - SCALE * (self.title_count - 300), SCREEN_HEIGHT // 2 - 190))
+                self.scratch.blit(self.squid[anim], (SCREEN_WIDTH - SCALE * (self.title_count - 299), SCREEN_HEIGHT // 2 - 190))
             if self.title_count >= 400 and self.title_count < 500:
                 anim = (self.title_count // 4) % 2
                 self.scratch.blit(self.squid_pulling_y[anim], (SCREEN_WIDTH // 2 + SCALE * (self.title_count - 400 + 6), SCREEN_HEIGHT // 2 - 190))
             if self.title_count >= 600 and self.title_count < 700:
                 anim = (self.title_count // 4) % 2
-                self.scratch.blit(self.squid_pushing_y[anim], (SCREEN_WIDTH - SCALE * (self.title_count - 600 + 7), SCREEN_HEIGHT // 2 - 190))
+                self.scratch.blit(self.squid_pushing_y[anim], (SCREEN_WIDTH - SCALE * (self.title_count - 600 + 6), SCREEN_HEIGHT // 2 - 190))
             if self.title_count >= 700 and self.title_count < 800:
-                self.scratch.blit(self.squid_pushing_y[0], (SCREEN_WIDTH // 2 + SCALE * 5, SCREEN_HEIGHT // 2 - 190))
+                self.scratch.blit(self.squid_pushing_y[0], (SCREEN_WIDTH // 2 + SCALE * 7, SCREEN_HEIGHT // 2 - 190))
 
     def _draw_hiscores(self):
         """Draw the high score table"""
         variant = self.title_variant
 
-        message = "HIGH  CCORES" if variant and self.hiscore_count < 445 else "HIGH  SCORES"
+        message = "HIGH CCORES" if variant and self.hiscore_count < 445 else "HIGH SCORES"
 
-        self._draw_center_text(message, self.font_medium,
-                            RED, y=SCREEN_HEIGHT // 2 - 180)
+        self._draw_center_text(message, self.fontred, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 180)
+        max_name_len = max(len(self.high_score_table[i]["name"]) for i in range(10))
+        max_score_len = len(str(self.high_score))
         for i in range(10):
-            colour = GREEN if self.high_score_table[i]["highlight"] else WHITE
-            self._draw_text(str(self.high_score_table[i]["score"]), self.font_medium,
-                            colour, SCREEN_WIDTH // 2 - 24, SCREEN_HEIGHT // 2 - 126 + (i * 27), "right")
-            self._draw_text(self.high_score_table[i]["name"], self.font_medium,
-                            colour, SCREEN_WIDTH // 2 + 12, SCREEN_HEIGHT // 2 - 126 + (i * 27), "left")
+            font = self.fontgreen if self.high_score_table[i]["highlight"] else self.fontwhite
+            # Pad high scores and draw centered
+            self._draw_center_text(f'{self.high_score_table[i]["score"]:>{max_score_len}} {self.high_score_table[i]["name"]:<{max_name_len}}', 
+                                    font, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 126 + (i * 27))
         self._draw_legend()
 
         # Animation of squid blowing up 'C'
         if variant:
             if self.hiscore_count >= 300 and self.hiscore_count < 400:
                 anim = (self.hiscore_count // 4) % 2
-                self.scratch.blit(self.squid[anim], (SCALE * (self.hiscore_count - 294), UFO_Y))
+                self.scratch.blit(self.squid[anim], (SCALE * (self.hiscore_count - 292), UFO_Y))
             if self.hiscore_count >= 400 and self.hiscore_count < 460:
-                self.scratch.blit(self.squid[0], (SCALE * 106, UFO_Y))
+                self.scratch.blit(self.squid[0], (SCALE * 108, UFO_Y))
             if self.hiscore_count >= 420 and self.hiscore_count < 440:
                 anim = self.hiscore_count % 4
-                self.scratch.blit(self.enemy_shot[ShotType.SQUIGGLY.value][anim], (SCALE * 109, UFO_Y + SCALE * (self.hiscore_count - 420 + 8)))
+                self.scratch.blit(self.enemy_shot[ShotType.SQUIGGLY.value][anim], (SCALE * 111, UFO_Y + SCALE * (self.hiscore_count - 420 + 8)))
             if self.hiscore_count >= 440 and self.hiscore_count < 450:
-                self.scratch.blit(self.enemy_shot_explode, (SCALE * 107, SCREEN_HEIGHT // 2 - 180))
+                self.scratch.blit(self.enemy_shot_explode, (SCALE * 109, SCREEN_HEIGHT // 2 - 180))
             if self.hiscore_count >= 460:
                 anim = (self.hiscore_count // 4) % 2
-                self.scratch.blit(self.squid[anim], (SCALE * (self.hiscore_count - 354), UFO_Y))
+                self.scratch.blit(self.squid[anim], (SCALE * (self.hiscore_count - 352), UFO_Y))
 
     def _draw_game_over(self):
         """Draw Game Over"""
         message = "GAME OVER"
         step = min(self.game_over_count // 6, len(message))
-        self._draw_center_text(message[:step], self.font_large, RED, y = 60)
+        self._draw_center_text(message[:step], self.fontred, FONT_LARGE, y = 60)
 
     def _draw_new_high_score(self):
         """Allow player to enter their name when they have a new high score"""
-        self._draw_center_text("NEW  HIGH  SCORE!", self.font_medium,
-                            RED, y=SCREEN_HEIGHT // 2 - 200)
-        self._draw_center_text("ENTER  YOUR  NAME", self.font_medium,
-                            WHITE, y=SCREEN_HEIGHT // 2 - 160)
-        self._draw_center_text(self.high_score_name, self.font_medium,
-                            GREEN, y=SCREEN_HEIGHT // 2 - 80)
+        self._draw_center_text("NEW HIGH SCORE!", self.fontred, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 200)
+        self._draw_center_text("ENTER YOUR NAME", self.fontwhite, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 160)
+        self._draw_center_text(self.high_score_name, self.fontgreen, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 80)
         pygame.draw.line(self.scratch, GREEN, (SCREEN_WIDTH // 3, SCREEN_HEIGHT // 2 - 40), ((SCREEN_WIDTH // 3) * 2, SCREEN_HEIGHT // 2 - 40), 3)
 
-    def _draw_text(self, text, font, color, x, y, align="center"):
+    def _draw_text(self, text, font, scale, x, y, align="center"):
         """Draw some text on the screen"""
-        surf = font.render(text, True, color)
+        surf = sprite.drawtext(text, font, scale)
         rect = surf.get_rect()
         if align == "left":
             rect.topleft = (x, y)
@@ -1686,9 +1338,9 @@ class Game:
             rect.center = (x, y)
         self.scratch.blit(surf, rect)
 
-    def _draw_center_text(self, text, font, color, y):
+    def _draw_center_text(self, text, font, scale, y):
         """Draw some text in the middle of the screen"""
-        self._draw_text(text, font, color, SCREEN_WIDTH // 2, y, "top")
+        self._draw_text(text, font, scale, SCREEN_WIDTH // 2, y, "top")
 
 
 # ---------------------------------------------------------------------------
