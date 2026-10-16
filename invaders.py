@@ -1289,9 +1289,9 @@ class Game:
         for i in range(10):
             font = self.fontgreen if self.high_score_table[i]["highlight"] else self.fontwhite
             self._draw_text(str(self.high_score_table[i]["score"]), font,
-                            FONT_MEDIUM, SCREEN_WIDTH // 2 - 124, SCREEN_HEIGHT // 2 - 126 + (i * 27), "right")
+                            FONT_MEDIUM, SCREEN_WIDTH // 2 - 57, SCREEN_HEIGHT // 2 - 126 + (i * 27), "right")
             self._draw_text(self.high_score_table[i]["name"], font,
-                            FONT_MEDIUM, SCREEN_WIDTH // 2 - 88, SCREEN_HEIGHT // 2 - 126 + (i * 27), "left")
+                            FONT_MEDIUM, SCREEN_WIDTH // 2 - 24, SCREEN_HEIGHT // 2 - 126 + (i * 27), "left")
         self._draw_legend()
 
         # Animation of squid blowing up 'C'
