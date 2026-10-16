@@ -1125,8 +1125,8 @@ def drawtext(text, font, scale):
 def rendertext(colour):
     """Create surface for every character in the font"""
     text_surfaces = []
-    for i in range(len(TEXT)):
-        text_surfaces.append(build_sprite(TEXT[i], colour, 1))
+    for _, ch in enumerate(TEXT):
+        text_surfaces.append(build_sprite(ch, colour, 1))
     return text_surfaces
 
 
