@@ -255,7 +255,7 @@ def tremolo(buf, freq, intensity, shape=_sin):
     """Modify a buffer in place so that amplitude increases and decreases according to shape and intensity"""
     for i in range(len(buf)):
         phase = i * math.pi * freq / SAMPLE_RATE
-        buf[i] *= (1.0 - intensity) + abs(shape(phase) * intensity)
+        buf[i] *= (1.0 - intensity) + abs(((shape(phase) + 1.0) / 2.0) * intensity)
     return
 
 
@@ -296,13 +296,13 @@ def echo(buf, ms, vol):
 
 
 def si_extralife():
-    """Return bytes representing Space Invaders extra life sound"""
+    """Space Invaders extra life notification"""
     ms = 1360
     buf1 = make_triangle(ms, 1.0, 490)
     buf2 = make_sawtooth(ms, 1.0, 490)
     buf = combine(buf1, buf2)
-    tremolo(buf, 60.0, 0.8, shape=_triangle)
-    buf = boost(buf, 2.0)
+    tremolo(buf, 120.0, 0.9, shape=_triangle)
+    buf = boost(buf, 5.0)
     envelope(buf, 20, 0, 1.0, 20, end=200)
     for i in range(8):
         s = i * 145 + 200
