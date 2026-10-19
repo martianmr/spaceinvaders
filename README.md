@@ -7,6 +7,7 @@
 
 ```bash
 git clone https://github.com/martianmr/spaceinvaders
+cd spaceinvaders
 pip install -r requirements.txt
 python invaders.py
 ```
