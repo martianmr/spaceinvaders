@@ -28,7 +28,7 @@ import sys
 import pygame
 from enum import Enum
 
-import arcadesynth as synth
+from arcadesynth import synth_spaceinvaders as synth
 import sprite
 
 # ---------------------------------------------------------------------------
