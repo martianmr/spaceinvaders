@@ -1109,7 +1109,7 @@ def text_to_sprite(chars):
     return buf
 
 
-def drawtext(text, font, scale):
+def draw_text(text, font, scale):
     """Draw text characters on a pygame surface"""
     height = (CHARHEIGHT + 1)
     width = max(1, (len(text) * (CHARWIDTH + CHARSPACING) - CHARSPACING))
@@ -1121,7 +1121,7 @@ def drawtext(text, font, scale):
     return surf
 
 
-def rendertext(colour):
+def render_text(colour):
     """Create surface for every character in the font"""
     text_surfaces = []
     for _, ch in enumerate(TEXT):

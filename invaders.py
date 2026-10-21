@@ -377,9 +377,9 @@ class Game:
         self.upside_down_y = sprite.build_sprite(sprite.UPSIDE_DOWN_Y, WHITE, SCALE)
         self.squid_pulling_y = [sprite.build_sprite(f, WHITE, SCALE) for f in sprite.SQUID_PULLING_Y]
         self.squid_pushing_y = [sprite.build_sprite(f, WHITE, SCALE) for f in sprite.SQUID_PUSHING_Y]
-        self.fontwhite = sprite.rendertext(WHITE)
-        self.fontgreen = sprite.rendertext(GREEN)
-        self.fontred = sprite.rendertext(RED)
+        self.font_white = sprite.render_text(WHITE)
+        self.font_green = sprite.render_text(GREEN)
+        self.font_red = sprite.render_text(RED)
 
         # Initial values for the high score table
         self.high_score_table = self._load_high_score()
@@ -1151,12 +1151,12 @@ class Game:
             dead_rect.centery = self.ufo.rect.centery
             self.scratch.blit(self.ufo_dead, dead_rect)
             if self.ufo.dead_timer < 60: # Add the UFO score after a pause
-                self._draw_text(str(self.ufo.bonus), self.fontwhite, FONT_SMALL,
+                self._draw_text(str(self.ufo.bonus), self.font_white, FONT_SMALL,
                         self.ufo.rect.centerx, self.ufo.rect.centery, "center")
 
         if self.state == "paused":
             if SHOWPAUSE:
-                self._draw_center_text("PAUSED", self.fontgreen, FONT_LARGE, y=63)
+                self._draw_center_text("PAUSED", self.font_green, FONT_LARGE, y=63)
             self.state = self.laststate
             self.laststate = "paused"
         self._draw_hud()
@@ -1173,7 +1173,7 @@ class Game:
             self.state = "paused"
 
         if self.message: # ad hoc message to player
-            self._draw_center_text(self.message, self.fontred, FONT_MEDIUM, y=93)
+            self._draw_center_text(self.message, self.font_red, FONT_MEDIUM, y=93)
 
         # resize the screen and apply CRT effect
         self._crt(self.scratch, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -1203,13 +1203,13 @@ class Game:
 
     def _draw_hud(self):
         """Draw score etc. in smaller font than original to make the game fit a landscape screen a little better"""
-        self._draw_text("SCORE", self.fontwhite, FONT_SMALL, 16, 6, "left")
-        self._draw_text(str(self.score), self.fontwhite, FONT_SMALL, 16, 30, "left")
-        self._draw_text("HI-SCORE", self.fontwhite, FONT_SMALL, SCREEN_WIDTH // 2, 6, "top")
-        self._draw_text(str(self.high_score), self.fontwhite, 2, SCREEN_WIDTH // 2, 30, "top")
-        self._draw_text("WAVE", self.fontwhite, FONT_SMALL, SCREEN_WIDTH - 16, 6, "right")
+        self._draw_text("SCORE", self.font_white, FONT_SMALL, 16, 6, "left")
+        self._draw_text(str(self.score), self.font_white, FONT_SMALL, 16, 30, "left")
+        self._draw_text("HI-SCORE", self.font_white, FONT_SMALL, SCREEN_WIDTH // 2, 6, "top")
+        self._draw_text(str(self.high_score), self.font_white, 2, SCREEN_WIDTH // 2, 30, "top")
+        self._draw_text("WAVE", self.font_white, FONT_SMALL, SCREEN_WIDTH - 16, 6, "right")
         wave = self.wave if self.state == "playing" else self.lastwave
-        self._draw_text(str(wave), self.fontwhite, FONT_SMALL, SCREEN_WIDTH - 16, 30, "right")
+        self._draw_text(str(wave), self.font_white, FONT_SMALL, SCREEN_WIDTH - 16, 30, "right")
         if self.state == "playing" or self.state == "paused" or self.state == "demo":
         # Lives as small cannon icons.
             for i in range(self.lives-1):
@@ -1217,27 +1217,27 @@ class Game:
                                             (self.player_img.get_width() // 2,
                                             self.player_img.get_height() // 2))
                 self.scratch.blit(icon, ((i * 24) + 36, SCREEN_HEIGHT - 30))
-            self._draw_text(str(self.lives), self.fontwhite, FONT_SMALL, 9, SCREEN_HEIGHT - 30, "left")
+            self._draw_text(str(self.lives), self.font_white, FONT_SMALL, 9, SCREEN_HEIGHT - 30, "left")
 
         if DEBUG:
             # Display shot count and next UFO score for debugging (or cheating)
             ufo_score_table = [100, 50, 50, 100, 150, 100, 100, 50, 300, 100, 100, 100, 50, 150, 100]
             ufo_score_index = (self.player_shot_count+1) % 15
             ufo_bonus = ufo_score_table[ufo_score_index]
-            self._draw_text(f"{self.player_shot_count} {ufo_bonus}", self.fontwhite, FONT_SMALL,
+            self._draw_text(f"{self.player_shot_count} {ufo_bonus}", self.font_white, FONT_SMALL,
                     SCREEN_WIDTH - 16, SCREEN_HEIGHT - 30, "right")
 
     def _draw_legend(self):
         """A bottom-of-screen point-value legend."""
         y = SCREEN_HEIGHT - 30
         self.scratch.blit(self.ufo_icon, (54, y+SCALE))
-        self._draw_text("=? PTS", self.fontwhite, FONT_SMALL, 96, y, "left")
+        self._draw_text("=? PTS", self.font_white, FONT_SMALL, 96, y, "left")
         self.scratch.blit(self.squid_icon, (208, y))
-        self._draw_text("=30 PTS", self.fontwhite, FONT_SMALL, 234, y, "left")
+        self._draw_text("=30 PTS", self.font_white, FONT_SMALL, 234, y, "left")
         self.scratch.blit(self.crab_icon, (354, y))
-        self._draw_text("=20 PTS", self.fontwhite, FONT_SMALL, 384, y, "left")
+        self._draw_text("=20 PTS", self.font_white, FONT_SMALL, 384, y, "left")
         self.scratch.blit(self.octopus_icon, (508, y ))
-        self._draw_text("=10 PTS", self.fontwhite, FONT_SMALL, 538, y, "left")
+        self._draw_text("=10 PTS", self.font_white, FONT_SMALL, 538, y, "left")
 
     def _draw_title(self):
         """Draw an intro screen with information on game keys"""
@@ -1253,14 +1253,14 @@ class Game:
         step3 = max(0, self.title_count // 10 - length1 - len(message2) - 8)
         message3 = "INVADERS"
 
-        self._draw_center_text(message1[:min(step1, len(message1))], self.fontwhite, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 190)
-        self._draw_center_text(message2[:min(step2, len(message2))], self.fontgreen, FONT_LARGE, SCREEN_HEIGHT // 2 - 160)
-        self._draw_center_text(message3[:min(step3, len(message3))], self.fontgreen, FONT_LARGE, SCREEN_HEIGHT // 2 - 80)
-        self._draw_center_text("PRESS ENTER/SPACE TO START", self.fontwhite, FONT_MEDIUM, SCREEN_HEIGHT // 2 + 30)
-        self._draw_center_text(" ARROWS / A,D - MOVE       ", self.fontwhite, FONT_SMALL, SCREEN_HEIGHT // 2 + 80)
-        self._draw_center_text("SPACE / LCTRL - FIRE       ", self.fontwhite, FONT_SMALL, SCREEN_HEIGHT // 2 + 100)
-        self._draw_center_text("            P - PAUSE      ", self.fontwhite, FONT_SMALL, SCREEN_HEIGHT // 2 + 120)
-        self._draw_center_text("            F - FULL SCREEN", self.fontwhite, FONT_SMALL, SCREEN_HEIGHT // 2 + 140)
+        self._draw_center_text(message1[:min(step1, len(message1))], self.font_white, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 190)
+        self._draw_center_text(message2[:min(step2, len(message2))], self.font_green, FONT_LARGE, SCREEN_HEIGHT // 2 - 160)
+        self._draw_center_text(message3[:min(step3, len(message3))], self.font_green, FONT_LARGE, SCREEN_HEIGHT // 2 - 80)
+        self._draw_center_text("PRESS ENTER/SPACE TO START", self.font_white, FONT_MEDIUM, SCREEN_HEIGHT // 2 + 30)
+        self._draw_center_text(" ARROWS / A,D - MOVE       ", self.font_white, FONT_SMALL, SCREEN_HEIGHT // 2 + 80)
+        self._draw_center_text("SPACE / LCTRL - FIRE       ", self.font_white, FONT_SMALL, SCREEN_HEIGHT // 2 + 100)
+        self._draw_center_text("            P - PAUSE      ", self.font_white, FONT_SMALL, SCREEN_HEIGHT // 2 + 120)
+        self._draw_center_text("            F - FULL SCREEN", self.font_white, FONT_SMALL, SCREEN_HEIGHT // 2 + 140)
         self._draw_legend()
 
         # Animation of squid correcting upside down 'Y'
@@ -1285,11 +1285,11 @@ class Game:
 
         message = "HIGH CCORES" if variant and self.hiscore_count < 445 else "HIGH SCORES"
 
-        self._draw_center_text(message, self.fontred, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 180)
+        self._draw_center_text(message, self.font_red, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 180)
         max_name_len = max(len(self.high_score_table[i]["name"]) for i in range(10))
         max_score_len = len(str(self.high_score))
         for i in range(10):
-            font = self.fontgreen if self.high_score_table[i]["highlight"] else self.fontwhite
+            font = self.font_green if self.high_score_table[i]["highlight"] else self.font_white
             # Pad high scores and draw centered
             self._draw_center_text(f'{self.high_score_table[i]["score"]:>{max_score_len}} {self.high_score_table[i]["name"]:<{max_name_len}}', 
                                     font, FONT_MEDIUM, SCREEN_HEIGHT // 2 - 126 + (i * 27))
@@ -1315,18 +1315,18 @@ class Game:
         """Draw Game Over"""
         message = "GAME OVER"
         step = min(self.game_over_count // 6, len(message))
-        self._draw_center_text(message[:step], self.fontred, FONT_LARGE, y = 60)
+        self._draw_center_text(message[:step], self.font_red, FONT_LARGE, y = 60)
 
     def _draw_new_high_score(self):
         """Allow player to enter their name when they have a new high score"""
-        self._draw_center_text("NEW HIGH SCORE!", self.fontred, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 200)
-        self._draw_center_text("ENTER YOUR NAME", self.fontwhite, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 160)
-        self._draw_center_text(self.high_score_name, self.fontgreen, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 80)
+        self._draw_center_text("NEW HIGH SCORE!", self.font_red, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 200)
+        self._draw_center_text("ENTER YOUR NAME", self.font_white, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 160)
+        self._draw_center_text(self.high_score_name, self.font_green, FONT_MEDIUM, y=SCREEN_HEIGHT // 2 - 80)
         pygame.draw.line(self.scratch, GREEN, (SCREEN_WIDTH // 3, SCREEN_HEIGHT // 2 - 40), ((SCREEN_WIDTH // 3) * 2, SCREEN_HEIGHT // 2 - 40), 3)
 
     def _draw_text(self, text, font, scale, x, y, align="center"):
         """Draw some text on the screen"""
-        surf = sprite.drawtext(text, font, scale)
+        surf = sprite.draw_text(text, font, scale)
         rect = surf.get_rect()
         if align == "left":
             rect.topleft = (x, y)
