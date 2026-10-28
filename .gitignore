@@ -172,3 +172,9 @@ cython_debug/
 
 # High Score
 highscore.txt
+
+# Visual Studio Code
+.vscode/*
+
+# Built Visual Studio Code Extensions
+*.vsix

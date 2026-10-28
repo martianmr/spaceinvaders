@@ -992,7 +992,7 @@ class Game:
             self._play_bass_note()
 
     def _check_collisions(self):
-        """Check obect rect structures to see if anything collided and process consequences"""
+        """Check object rect structures to see if anything collided and process consequences"""
         # Player shots vs invaders.
         remaining = []
         for ps in self.player_shots:
@@ -1098,7 +1098,7 @@ class Game:
         self.player_shots = []
         if self.score > self.high_score:
             self.high_score = self.score
-            self._save_high_score() # Add the pplayer name to the high score table
+            self._save_high_score() # Add the player name to the high score table
 
 # ---------------------------------------------------------------------------
 # Draw the screen
