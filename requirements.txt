@@ -1,2 +1,2 @@
 pygame-ce==2.5.8
-arcadesynth==1.1.3
+arcadesynth==1.1.4
