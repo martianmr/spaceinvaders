@@ -391,16 +391,20 @@ class Game:
         self.laststate = self.state
         self.reload_times = {300: 48, 1100: 16, 3100: 8, -1: 7}   # How fast the invaders fire increases with score
         self.shot_column = {
-            ShotType.PLUNGER.value : [0x01, 0x07, 0x01, 0x01, 0x01, 0x04, 0x0b, 0x01, 0x06, 0x03, 0x01, 0x01, 0x0b, 0x09, 0x02, 0x08],
-            ShotType.SQUIGGLY.value : [0x0b, 0x01, 0x06, 0x03, 0x01, 0x01, 0x0b, 0x09, 0x02, 0x08, 0x02, 0x0b, 0x04, 0x07, 0x0a]
+            ShotType.PLUNGER.value : (0x01, 0x07, 0x01, 0x01, 0x01, 0x04, 0x0b, 0x01, 0x06, 0x03, 0x01, 0x01, 0x0b, 0x09, 0x02, 0x08),
+            ShotType.SQUIGGLY.value : (0x0b, 0x01, 0x06, 0x03, 0x01, 0x01, 0x0b, 0x09, 0x02, 0x08, 0x02, 0x0b, 0x04, 0x07, 0x0a)
         } # List of columns that each type of enemy shot will use in the formation
-        self.demo_commands = [1, 0, 0, 1, 0, 2, 1, 0, 2, 1] # 1=Right, 2=Left
+        self.demo_commands = (1, 0, 0, 1, 0, 2, 1, 0, 2, 1) # 1=Right, 2=Left
         self.demo_command_index = -1
         self.demo_keys = [
             {pygame.K_LEFT: False, pygame.K_RIGHT: False, pygame.K_a: False, pygame.K_d: False}, # Stay still
             {pygame.K_LEFT: False, pygame.K_RIGHT: True, pygame.K_a: False, pygame.K_d: False},  # Right
             {pygame.K_LEFT: True, pygame.K_RIGHT: False, pygame.K_a: False, pygame.K_d: False}   # Left
         ]
+        # UFO score is based on the number of player shots.
+        # Maximum 300 score is on shot 8, 23 and every 15 shots from then onwards. Shot counts are
+        # reset at the start of a new wave.
+        self.ufo_score_table = (100, 50, 50, 100, 150, 100, 100, 50, 300, 100, 100, 100, 50, 150, 100)
         self.keys = {}
         self.score = 0
         self.lastwave = 1
@@ -1040,12 +1044,8 @@ class Game:
         if self.ufo.active:
             for ps in self.player_shots:
                 if ps.rect.colliderect(self.ufo.rect):
-                    # UFO score is based on the number of player shots.
-                    # Maximum 300 score is on shot 8, 23 and every 15 shots from then onwards. Shot counts are
-                    # reset at the start of a new wave.
-                    ufo_score_table = [100, 50, 50, 100, 150, 100, 100, 50, 300, 100, 100, 100, 50, 150, 100]
                     ufo_score_index = (self.player_shot_count) % 15
-                    self.ufo.bonus = ufo_score_table[ufo_score_index]
+                    self.ufo.bonus = self.ufo_score_table[ufo_score_index]
                     self.player_shots.remove(ps)
                     if self.state == "playing":
                         self.score += self.ufo.bonus
@@ -1221,9 +1221,8 @@ class Game:
 
         if DEBUG:
             # Display shot count and next UFO score for debugging (or cheating)
-            ufo_score_table = [100, 50, 50, 100, 150, 100, 100, 50, 300, 100, 100, 100, 50, 150, 100]
             ufo_score_index = (self.player_shot_count+1) % 15
-            ufo_bonus = ufo_score_table[ufo_score_index]
+            ufo_bonus = self.ufo_score_table[ufo_score_index]
             self._draw_text(f"{self.player_shot_count} {ufo_bonus}", self.font_white, FONT_SMALL,
                     SCREEN_WIDTH - 16, SCREEN_HEIGHT - 30, "right")
 
