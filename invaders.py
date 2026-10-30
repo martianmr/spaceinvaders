@@ -108,13 +108,13 @@ def init_audio():
         SOUND_OK = False
         return sounds
 
-    sounds["bass"] = [_make_sound(0.8, f) for f in (synth.si_march1, synth.si_march2, synth.si_march3, synth.si_march4)] # four-note bass heartbeat.
-    sounds["shoot"] = _make_sound(0.2, synth.si_playerfire)
-    sounds["invader_killed"] = _make_sound(0.45, synth.si_aliendie)
-    sounds["player_death"] = _make_sound(0.55, synth.si_explosion)
-    sounds["ufo"] = _make_sound(0.2, synth.si_ufo)
+    sounds["bass"] = [_make_sound(0.5, f) for f in (synth.si_march1, synth.si_march2, synth.si_march3, synth.si_march4)] # four-note bass heartbeat.
+    sounds["shoot"] = _make_sound(0.5, synth.si_playerfire)
+    sounds["invader_killed"] = _make_sound(0.5, synth.si_aliendie)
+    sounds["player_death"] = _make_sound(0.5, synth.si_explosion)
+    sounds["ufo"] = _make_sound(0.5, synth.si_ufo)
     sounds["ufo_killed"] = _make_sound(0.5, synth.si_ufodie)
-    sounds["extra_life"] = _make_sound(0.6, synth.si_extralife)
+    sounds["extra_life"] = _make_sound(0.5, synth.si_extralife)
     return sounds
 
 
