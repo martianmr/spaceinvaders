@@ -928,7 +928,7 @@ class Game:
                         nearest = distance[min(distance)]
                         shooter = columns[nearest]
                         target_column = 0
-                        if min(distance) <= self.player.rect.width // 2:
+                        if min(distance) <= self.player.rect.width:
                             target_column = nearest
                         else:
                             # Pick the column over the player or try 1 or 11 if the player is outside the formation but on the same scan side
