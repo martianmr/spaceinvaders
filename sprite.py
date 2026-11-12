@@ -63,7 +63,7 @@ OCTOPUS = (
     "XXXXXXXXXXXX",
     "..XXX..XXX..",
     ".XX..XX..XX.",
-    "...XX..XX...",
+    "..XX....XX..",
 )
 
 ENEMY_DEAD = (
