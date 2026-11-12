@@ -831,7 +831,8 @@ class Game:
         PLUNGER and SQUIGGLY shots use a list to drop shots from predictable columns and chooses the lowest invader in the column. If no invaders are in the
         column the shot type is skipped. ROLLING shots target the player directly, if the player is not below an invader and the player is to the left or right 
         of the invader formation but still on the same scan side we try and fire from column 1 or 11 as appropriate. Once those columns are gone ROLLING shots
-        will only appear over the player.
+        will only appear over the player. Note that because of a quirk in the original code if the invaders are too far over the left or right and the player is
+        on the opposite side no ROLLING shots will appear.
 
         ROLLING shots skip every other attempt to fire.
 
@@ -843,24 +844,26 @@ class Game:
         a shot falls on the left it should pick the next type in the list and if it falls on the right it should repeat the same shot if the column is 
         available for fire.
 
-        That is how the original 8080 code looks like it should work, however in emulation we observe the second ROLLING shot (the left of screen shot) 
-        is delayed until shot_timer is 1 - so the actual processing order is as follows:
+        In the original 8080 code the ROLLING shot initialises a wait counter to 2 and decrements this count every time we process the left or right objects
+        so this happens twice per frame. When the count reaches 0 we process the ROLLING shot code. At this point we re-initialise the wait to 2 and instead of 
+        running straight away we set a flag to run it next time, the next time it runs it will fire a ROLLING shot and the flag will reset when the ROLLING
+        shot is removed.
+        Meanwhile the wait counter is copied to a sync value every time the main game loop runs, which happens when processing the right side of the screen,
+        so the value goes 2, 0, 1 and repeats. The SQUIGGLY shot fires when the value is 2 and the PLUNGER shot fires when the value is 1.
+
+        Our code is simpler but achieves the same effect, we increment shot_timer each frame and process as follows:
 
         shot_timer = 0:
-        ROLLING - Right
+        ROLLING - Right (but skip firing a rolling shot first time we try)
 
         shot_timer = 1:
         PLUNGER - Right
-        ROLLING - Left
+        ROLLING - Left (but skip firing a rolling shot first time we try)
         PLUNGER - Left
 
         shot_timer = 2:
         SQUIGGLY - Right
         SQUIGGLY - Left
-
-        This could be a timing aftifact or it could be I missed something but it significantly affects the order the shots are fired. Without this the code
-        would repeat ROLLING shots to the right of the screen if the player moves to destroy the right column at start of game and this effect gives them a
-        bit of a break.
         """
 
         if self.lives < 1:
