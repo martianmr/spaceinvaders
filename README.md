@@ -5,6 +5,8 @@
 
 ## 👾 Quickstart
 
+Ensure you have [Python](https://www.python.org/downloads/) (>=3.11) and [Git](https://git-scm.com/install/) installed.
+
 ```bash
 git clone https://github.com/martianmr/spaceinvaders
 cd spaceinvaders
