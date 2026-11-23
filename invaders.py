@@ -355,6 +355,7 @@ class Game:
             pass
         self.clock = pygame.time.Clock()
         self.sounds = init_audio()
+        self.joysticks = {}
         self.mute = True
 
         # Pre-render sprites.
@@ -396,7 +397,7 @@ class Game:
         } # List of columns that each type of enemy shot will use in the formation
         self.demo_commands = (1, 0, 0, 1, 0, 2, 1, 0, 2, 1) # 1=Right, 2=Left
         self.demo_command_index = -1
-        self.demo_keys = [
+        self.fake_keys = [
             {pygame.K_LEFT: False, pygame.K_RIGHT: False, pygame.K_a: False, pygame.K_d: False}, # Stay still
             {pygame.K_LEFT: False, pygame.K_RIGHT: True, pygame.K_a: False, pygame.K_d: False},  # Right
             {pygame.K_LEFT: True, pygame.K_RIGHT: False, pygame.K_a: False, pygame.K_d: False}   # Left
@@ -571,6 +572,13 @@ class Game:
         self.message = text
         self.message_timer = frames
 
+    def _start_game(self):
+        self.state = "playing"
+        self.reset()
+        self.score = 0
+        self.mute = False
+        self._show_message("PLAY PLAYER <1>")
+
     def handle_events(self):
         """Handle keyboard input and other events"""
         for event in pygame.event.get():
@@ -591,11 +599,7 @@ class Game:
                     self.state = "paused"
                 elif self.state == "title" or self.state == "demo" or self.state == "hiscore":
                     if event.key in (pygame.K_RETURN, pygame.K_SPACE):
-                        self.state = "playing"
-                        self.reset()
-                        self.score = 0
-                        self.mute = False
-                        self._show_message("PLAY PLAYER <1>")
+                        self._start_game()
                 elif self.state == "playing":
                     if event.key == pygame.K_SPACE or event.key == pygame.K_LCTRL:
                         self._fire_player()
@@ -615,6 +619,18 @@ class Game:
                         self.high_score_name = self.high_score_name[:-1]
                     elif len(self.high_score_name) < 12:
                         self.high_score_name += event.unicode
+            if event.type == pygame.JOYDEVICEADDED:
+                joy = pygame.joystick.Joystick(event.device_index)
+                self.joysticks[joy.get_instance_id()] = joy
+            if event.type == pygame.JOYDEVICEREMOVED:
+                del self.joysticks[event.instance_id]
+            if event.type == pygame.JOYBUTTONDOWN:
+                if self.state == "title" or self.state == "demo" or self.state == "hiscore":
+                    if event.button == 0:
+                        self._start_game()
+                elif self.state == "playing":
+                    if event.button == 0:
+                        self._fire_player()
         return True
 
     def _fire_player(self, test = False):
@@ -705,15 +721,22 @@ class Game:
 
         if self.state == "playing": # Move the player based on keyboard input
             self.keys = pygame.key.get_pressed()
+            for joy in self.joysticks.values():
+                if joy.get_name() == 'Xbox 360 Controller':
+                    axis = joy.get_axis(0)
+                    if axis < -0.1:
+                        self.keys = self.fake_keys[2] # right
+                    elif axis > 0.1:
+                        self.keys = self.fake_keys[1] # left
             self.player.update(self.keys)
         elif self.state == "demo" and self._fire_player(True): # Handle demo, slightly different order depending on which side of the screen we're on
             self.demo_command_index = (self.demo_command_index + 1) % len(self.demo_commands)
             if self.last_shot_scan == "right":
                 self.player.update(self.keys)
                 self._fire_player()
-                self.keys = self.demo_keys[self.demo_commands[self.demo_command_index]]
+                self.keys = self.fake_keys[self.demo_commands[self.demo_command_index]]
             else:
-                self.keys = self.demo_keys[self.demo_commands[self.demo_command_index]]
+                self.keys = self.fake_keys[self.demo_commands[self.demo_command_index]]
                 self.player.update(self.keys)
                 self._fire_player()
         else:
